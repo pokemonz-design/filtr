@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ОСВ как рентгеновский снимок — настройте под себя</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#1a1a1a;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --accent:#0f62fe;
+    --accent-soft:#e8f0ff;
+    --warn:#fff7e6;
+    --warn-line:#f0c36d;
+    --chip:#f3f4f6;
+    --chip-hover:#e5e7eb;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.5;
+    font-size:16px;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:24px 20px 60px}
+
+  .panel{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    background:#fbfcfe;
+    margin-bottom:28px;
+  }
+  .panel h2{
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted);
+    margin:0 0 6px;
+    font-weight:600;
+  }
+  .panel .sub{
+    font-size:14px;
+    color:var(--muted);
+    margin:0 0 16px;
+  }
+  .filter-group{margin-bottom:16px}
+  .filter-group:last-of-type{margin-bottom:0}
+  .filter-label{
+    display:block;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1px solid transparent;
+    background:var(--chip);
+    color:var(--ink);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:.15s;
+    user-select:none;
+    font-family:inherit;
+  }
+  .chip:hover{background:var(--chip-hover)}
+  .chip.active{
+    background:var(--accent-soft);
+    color:var(--accent);
+    border-color:var(--accent);
+    font-weight:600;
+  }
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:14px;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+  }
+  .toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .toggle input{accent-color:var(--accent);width:16px;height:16px}
+  .reset{
+    margin-left:auto;
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-size:14px;
+    cursor:pointer;
+    font-family:inherit;
+    text-decoration:underline;
+    padding:0;
+  }
+  .reset:hover{opacity:.75}
+
+  .result-info{
+    font-size:14px;
+    color:var(--muted);
+    margin:0 0 16px;
+  }
+  .result-info strong{color:var(--ink)}
+
+  .card{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin-bottom:14px;
+    transition:.2s;
+    background:#fff;
+  }
+  .card.dim{opacity:.35}
+  .card.match{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .card h3{
+    margin:0 0 10px;
+    font-size:18px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .card .num{
+    display:inline-flex;
+    width:26px;height:26px;
+    align-items:center;justify-content:center;
+    background:var(--chip);
+    border-radius:50%;
+    font-size:13px;
+    color:var(--muted);
+    font-weight:600;
+    flex:0 0 auto;
+  }
+  .card.match .num{background:var(--accent);color:#fff}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .tag{
+    font-size:12px;
+    background:var(--chip);
+    color:var(--muted);
+    padding:3px 9px;
+    border-radius:6px;
+    cursor:pointer;
+    border:1px solid transparent;
+    font-family:inherit;
+  }
+  .tag:hover{border-color:var(--accent);color:var(--accent)}
+  .tag.hit{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+  .card p{margin:10px 0 0;font-size:15px;color:#374151}
+  .card .why{
+    margin-top:12px;
+    padding:10px 12px;
+    background:var(--warn);
+    border-left:3px solid var(--warn-line);
+    border-radius:6px;
+    font-size:13.5px;
+    color:#7c4a00;
+  }
+  .card .why strong{color:#5c3700}
+  .card .acc{
+    margin-top:8px;
+    font-size:13.5px;
+    color:var(--muted);
+  }
+  .card .acc b{color:var(--ink)}
+  .hidden{display:none !important}
+
+  .empty{
+    text-align:center;
+    padding:30px 20px;
+    color:var(--muted);
+    border:1px dashed var(--line);
+    border-radius:var(--radius);
+    font-size:14px;
+  }
+
+  @media (max-width:600px){
+    .wrap{padding:16px 14px 40px}
+    .panel{padding:16px}
+    .card{padding:16px}
+    .card h3{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="panel">
+    <h2>Настройте статью под себя</h2>
+    <p class="sub">Выберите отрасль и особенность бизнеса — релевантные проверки подсветятся, а «что болит» вы увидите внутри карточек.</p>
+
+    <div class="filter-group">
+      <span class="filter-label">Отрасль / модель бизнеса</span>
+      <div class="chips" id="chips-industry"></div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Особенность бизнеса</span>
+      <div class="chips" id="chips-feature"></div>
+    </div>
+
+    <div class="actions">
+      <label class="toggle">
+        <input type="checkbox" id="onlyRelevant">
+        Оставить только релевантное
+      </label>
+      <button class="reset" id="resetBtn">Сбросить фильтр</button>
+    </div>
+  </div>
+
+  <p class="result-info" id="resultInfo"></p>
+
+  <div id="cards"></div>
+
+  <div class="empty hidden" id="emptyState">
+    По выбранному сочетанию фильтров совпадений нет.<br>
+    Попробуйте убрать один из фильтров.
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- СПРАВОЧНИКИ ТЕГОВ (только отрасль + особенность) ----------
+  var DICT = {
+    industry: {
+      "Дистрибуция и ритейл":       ["distrib","retail"],
+      "Оптовая торговля":           ["wholesale","distrib"],
+      "Производство":               ["manufact"],
+      "Строительство и подряд":     ["construct","project"],
+      "Агро и сезонный бизнес":     ["agro","season"],
+      "Транспорт и логистика":      ["transport","logistics"],
+      "Добыча и промышленность":    ["mining","manufact"],
+      "IT, телеком, разработка":    ["it","telecom"],
+      "Быстрорастущие компании":    ["fastgrow","startup"],
+      "Напряжённая ликвидность":    ["tightliq"]
+    },
+    feature: {
+      "Длинный цикл":               ["longcycle"],
+      "Сезонность":                 ["season"],
+      "Отсрочки клиентам":          ["deferred"],
+      "Предоплаты поставщикам":     ["prepay"],
+      "CAPEX и инвестпроекты":      ["capex"],
+      "Крупные авансы":             ["bigadvance"],
+      "НЗП и незакрытые заказы":    ["wip"],
+      "Капитализация затрат":       ["capitalize"],
+      "Один крупный клиент / банк": ["oneclient"]
+    }
+  };
+
+  // ---------- ШЕСТЬ ПРОВЕРОК ----------
+  // В тегах — только отрасль и особенность. «Что болит» — в тексте карточки.
+  var CARDS = [
+    {
+      n: 1,
+      title: "«Треугольник ликвидности»: запасы + дебиторка + кредиторка",
+      accounts: "10 · 41 · 43 · 60.01 · 62.01 · 90.01 · 51",
+      tags: ["distrib","retail","wholesale","manufact","agro","transport","fastgrow","season","deferred","prepay"],
+      text: "Запасы и дебиторка растут быстрее выручки, а кредиторка не компенсирует рост. Ликвидность связывается в товаре и расчётах с клиентами.",
+      why: "Что болит: <strong>рост есть, а денег нет</strong>. Компания растёт, но не высвобождает ликвидность, а связывает её в товаре и расчётах с клиентами."
+    },
+    {
+      n: 2,
+      title: "«Качели ликвидности»: длинный актив + короткие обязательства",
+      accounts: "01 · 07 · 08 · 60 · 76 · 66 · 67",
+      tags: ["construct","project","mining","manufact","longcycle","capex","tightliq"],
+      text: "Растут капвложения и одновременно — краткосрочные кредиты и долг перед подрядчиками. Особенно опасен синхронный рост 08 и 66, если сроки ввода сдвигаются.",
+      why: "Что болит: <strong>длинный проект финансируется короткими деньгами</strong>. Пока банк продлевает лимит и проект идёт по графику — равновесие держится."
+    },
+    {
+      n: 3,
+      title: "«Петля обязательств»: банк + поставщики + налоги и зарплата",
+      accounts: "51 · 60 · 66 · 67 · 68 · 69 · 70",
+      tags: ["retail","distrib","season","tightliq","oneclient","fastgrow","agro","transport"],
+      text: "Все обязательства закрываются, но в последние допустимые даты. Компания живёт от одного крупного поступления до другого.",
+      why: "Что болит: <strong>жизнь от поступления до поступления</strong>. Достаточно сбоя в одном звене — и придётся выбирать, что оплачивать первым."
+    },
+    {
+      n: 4,
+      title: "«Налоговый нож»: НДС с полученных авансов",
+      accounts: "60.02 · 62.02 · 68 · субсчета НДС по авансам",
+      tags: ["distrib","construct","it","project","wholesale","prepay","bigadvance","longcycle","manufact"],
+      text: "Получили аванс — начислили НДС, перечислили деньги поставщику — а вычет ещё не заявлен. Разрыв финансируется из своих средств.",
+      why: "Что болит: <strong>ликвидность выпадает из оборота</strong>. Чем крупнее аванс и дольше период до вычета, тем больше своих денег надо вложить в налоговый разрыв."
+    },
+    {
+      n: 5,
+      title: "«Воронка незавершёнки»: затраты растут, но результатов нет",
+      accounts: "20 · 23 · 25 · 26 · 43 · 90.02",
+      tags: ["manufact","construct","project","longcycle","wip","agro","season","mining"],
+      text: "Затраты идут на 20 и 23, НЗП растёт, а выпуск по 43 не увеличивается. Ресурсы уходят — готовой продукции нет.",
+      why: "Что болит: <strong>непонятно, где нормальный цикл, а где проблемный проект</strong>. Внутри воронки могут скрываться брак, дефицит комплектующих или заморозка."
+    },
+    {
+      n: 6,
+      title: "«Лифт прибыли»: расходы вниз, активы вверх",
+      accounts: "04 · 08 · 97 · 20 · 26 · 44 · 90.02 · 99",
+      tags: ["it","telecom","project","fastgrow","startup","capitalize","longcycle"],
+      text: "Растут 04, 08 или 97, а текущие расходы сокращаются. Прибыль растёт не за счёт операций, а за счёт момента признания затрат.",
+      why: "Что болит: <strong>прибыль сегодня — нагрузка завтра</strong>. Амортизация, обесценение или списание, если активы не дадут ожидаемого эффекта."
+    }
+  ];
+
+  // ---------- СОСТОЯНИЕ ----------
+  var state = {
+    industry: new Set(),
+    feature: new Set()
+  };
+
+  var cardsEl   = document.getElementById("cards");
+  var infoEl    = document.getElementById("resultInfo");
+  var emptyEl   = document.getElementById("emptyState");
+  var onlyRel   = document.getElementById("onlyRelevant");
+  var resetBtn  = document.getElementById("resetBtn");
+
+  // ---------- РЕНДЕР ЧИПСОВ ----------
+  function renderChips(containerId, groupKey){
+    var box = document.getElementById(containerId);
+    Object.keys(DICT[groupKey]).forEach(function(label){
+      var btn = document.createElement("button");
+      btn.className = "chip";
+      btn.type = "button";
+      btn.textContent = label;
+      btn.dataset.group = groupKey;
+      btn.dataset.label = label;
+      btn.addEventListener("click", function(){
+        if (state[groupKey].has(label)) {
+          state[groupKey].delete(label);
+          btn.classList.remove("active");
+        } else {
+          state[groupKey].add(label);
+          btn.classList.add("active");
+        }
+        apply();
+      });
+      box.appendChild(btn);
+    });
+  }
+
+  // ---------- СБОР АКТИВНЫХ ТЕГОВ ----------
+  function activeTags(){
+    var tags = new Set();
+    ["industry","feature"].forEach(function(group){
+      state[group].forEach(function(label){
+        DICT[group][label].forEach(function(t){ tags.add(t); });
+      });
+    });
+    return tags;
+  }
+
+  // ---------- РЕНДЕР КАРТОЧЕК ----------
+  function renderCards(){
+    CARDS.forEach(function(c){
+      var el = document.createElement("article");
+      el.className = "card";
+      el.dataset.id = c.n;
+
+      var h = document.createElement("h3");
+      h.innerHTML = '<span class="num">' + c.n + '</span><span>' + c.title + '</span>';
+
+      var acc = document.createElement("div");
+      acc.className = "acc";
+      acc.innerHTML = "<b>Счета:</b> " + c.accounts;
+
+      var tagsBox = document.createElement("div");
+      tagsBox.className = "tags";
+
+      var visible = humanTags(c.tags);
+      visible.forEach(function(t){
+        var s = document.createElement("span");
+        s.className = "tag";
+        s.textContent = t.label;
+        s.dataset.tag = t.code;
+        s.addEventListener("click", function(){
+          activateByTag(t.code);
+        });
+        tagsBox.appendChild(s);
+      });
+
+      var p = document.createElement("p");
+      p.textContent = c.text;
+
+      var why = document.createElement("div");
+      why.className = "why";
+      why.innerHTML = c.why;
+
+      el.appendChild(h);
+      el.appendChild(acc);
+      el.appendChild(tagsBox);
+      el.appendChild(p);
+      el.appendChild(why);
+      el.dataset.tags = c.tags.join("|");
+      cardsEl.appendChild(el);
+    });
+  }
+
+  // человекочитаемые бейджи
+  function humanTags(codes){
+    var map = {
+      distrib:   "Дистрибуция",
+      retail:    "Ритейл",
+      wholesale: "Опт",
+      manufact:  "Производство",
+      construct: "Строительство",
+      project:   "Проектный бизнес",
+      agro:      "Агро",
+      season:    "Сезонность",
+      transport: "Транспорт",
+      logistics: "Логистика",
+      mining:    "Добыча",
+      it:        "IT / разработка",
+      telecom:   "Телеком",
+      fastgrow:  "Быстрый рост",
+      startup:   "Стартап",
+      tightliq:  "Напряжённая ликвидность",
+      longcycle: "Длинный цикл",
+      deferred:  "Отсрочки клиентам",
+      prepay:    "Предоплаты",
+      capex:     "CAPEX",
+      bigadvance:"Крупные авансы",
+      wip:       "НЗП",
+      capitalize:"Капитализация затрат",
+      oneclient: "Один клиент / банк"
+    };
+    var out = [];
+    codes.forEach(function(c){
+      if (map[c]) out.push({ code:c, label:map[c] });
+    });
+    return out;
+  }
+
+  // клик по бейджу = активировать соответствующий чип
+  function activateByTag(code){
+    ["industry","feature"].forEach(function(group){
+      Object.keys(DICT[group]).forEach(function(label){
+        if (DICT[group][label].indexOf(code) !== -1 && !state[group].has(label)) {
+          state[group].add(label);
+          var btn = document.querySelector('.chip[data-group="'+group+'"][data-label="'+label+'"]');
+          if (btn) btn.classList.add("active");
+        }
+      });
+    });
+    apply();
+  }
+
+  // ---------- ПРИМЕНЕНИЕ ФИЛЬТРА ----------
+  function apply(){
+    var active = activeTags();
+    var hasFilter = active.size > 0;
+
+    var cards = cardsEl.querySelectorAll(".card");
+    var matchCount = 0;
+
+    cards.forEach(function(card){
+      var tags = card.dataset.tags.split("|");
+      var hits = tags.filter(function(t){ return active.has(t); });
+      var isMatch = hasFilter ? hits.length > 0 : true;
+
+      card.querySelectorAll(".tag").forEach(function(b){
+        if (active.has(b.dataset.tag)) b.classList.add("hit");
+        else b.classList.remove("hit");
+      });
+
+      card.classList.toggle("match", hasFilter && isMatch);
+      card.classList.toggle("dim", hasFilter && !isMatch && !onlyRel.checked);
+
+      if (onlyRel.checked) {
+        card.classList.toggle("hidden", hasFilter && !isMatch);
+      } else {
+        card.classList.remove("hidden");
+      }
+
+      if (isMatch) matchCount++;
+    });
+
+    if (!hasFilter) {
+      infoEl.innerHTML = "Показаны все шесть проверок. Выберите отрасль и особенность бизнеса — релевантные подсветятся.";
+    } else {
+      infoEl.innerHTML = "Подходит проверок: <strong>" + matchCount + " из 6</strong>. Подсвечены релевантные бейджи.";
+    }
+
+    emptyEl.classList.toggle("hidden", !(hasFilter && onlyRel.checked && matchCount === 0));
+  }
+
+  // ---------- СБРОС ----------
+  resetBtn.addEventListener("click", function(){
+    ["industry","feature"].forEach(function(g){ state[g].clear(); });
+    document.querySelectorAll(".chip.active").forEach(function(c){ c.classList.remove("active"); });
+    onlyRel.checked = false;
+    apply();
+  });
+
+  onlyRel.addEventListener("change", apply);
+
+  // ---------- СТАРТ ----------
+  renderChips("chips-industry", "industry");
+  renderChips("chips-feature",  "feature");
+  renderCards();
+  apply();
+
+})();
+</script>
+</body>
+</html>

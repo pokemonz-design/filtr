@@ -1,518 +1,639 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ОСВ как рентгеновский снимок — настройте под себя</title>
+<title>ОСВ как рентгеновский снимок — выберите отрасль</title>
 <style>
   :root{
-    --bg:#ffffff;
-    --ink:#1a1a1a;
-    --muted:#6b7280;
-    --line:#e5e7eb;
-    --accent:#0f62fe;
-    --accent-soft:#e8f0ff;
-    --warn:#fff7e6;
-    --warn-line:#f0c36d;
-    --chip:#f3f4f6;
-    --chip-hover:#e5e7eb;
-    --radius:10px;
+    --purple:#5b3b8c;
+    --purple-deep:#3f2868;
+    --purple-soft:#f3edf9;
+    --purple-mid:#e4d7f0;
+    --ink:#241a35;
+    --muted:#7a7191;
+    --line:#e7def1;
+    --accent:#6f42a8;
+    --accent-soft:#efe5f8;
   }
   *{box-sizing:border-box}
+  html,body{height:100%}
   body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     color:var(--ink);
-    background:var(--bg);
-    line-height:1.5;
+    background:#fff;
     font-size:16px;
+    line-height:1.5;
   }
-  .wrap{max-width:880px;margin:0 auto;padding:24px 20px 60px}
+  .frame{
+    max-width:100%;
+    margin:0;
+    background:#fff;
+    border-radius:0;
+    box-shadow:none;
+    border:none;
+    overflow:hidden;
+  }
+  .header{
+    background:linear-gradient(135deg,var(--purple) 0%,var(--purple-deep) 100%);
+    color:#fff;
+    padding:14px 28px;
+  }
+  .header h1{
+    margin:0;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    line-height:1.3;
+  }
+  .body{padding:16px 28px 20px}
 
-  .panel{
-    border:1px solid var(--line);
+  /* Сетка 5 x 3 = 15 плиток */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .tile{
+    position:relative;
+    background:#fff;
+    border:1.5px solid var(--line);
     border-radius:14px;
-    padding:20px;
-    background:#fbfcfe;
-    margin-bottom:28px;
-  }
-  .panel h2{
-    font-size:14px;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-    color:var(--muted);
-    margin:0 0 6px;
-    font-weight:600;
-  }
-  .panel .sub{
-    font-size:14px;
-    color:var(--muted);
-    margin:0 0 16px;
-  }
-  .filter-group{margin-bottom:16px}
-  .filter-group:last-of-type{margin-bottom:0}
-  .filter-label{
-    display:block;
-    font-size:13px;
-    color:var(--muted);
-    margin-bottom:8px;
-    font-weight:600;
-  }
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{
-    border:1px solid transparent;
-    background:var(--chip);
-    color:var(--ink);
-    padding:6px 12px;
-    border-radius:999px;
-    font-size:13.5px;
+    padding:14px 8px 12px;
     cursor:pointer;
+    text-align:center;
     transition:.15s;
     user-select:none;
     font-family:inherit;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:8px;
+    color:var(--ink);
+    min-height:104px;
   }
-  .chip:hover{background:var(--chip-hover)}
-  .chip.active{
+  .tile:hover{
+    border-color:var(--purple-mid);
+    background:var(--purple-soft);
+    transform:translateY(-1px);
+  }
+  .tile.active{
     background:var(--accent-soft);
-    color:var(--accent);
     border-color:var(--accent);
-    font-weight:600;
+    box-shadow:0 0 0 3px rgba(111,66,168,.12);
   }
+  .tile .icon{
+    width:46px;
+    height:46px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#5a7ba8;
+  }
+  .tile .icon img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+  }
+  .tile .icon svg{
+    width:42px;
+    height:42px;
+    display:block;
+  }
+  .tile.active .icon{color:var(--accent)}
+  .tile .label{
+    font-size:12px;
+    line-height:1.2;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .tile.active .label{color:var(--accent);font-weight:600}
+
   .actions{
     display:flex;
     flex-wrap:wrap;
     align-items:center;
-    gap:14px;
-    margin-top:18px;
-    padding-top:16px;
+    gap:12px;
+    padding-top:12px;
     border-top:1px solid var(--line);
+    margin-bottom:14px;
   }
-  .toggle{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    font-size:14px;
-    cursor:pointer;
-    user-select:none;
-  }
-  .toggle input{accent-color:var(--accent);width:16px;height:16px}
-  .reset{
-    margin-left:auto;
-    background:none;
-    border:none;
-    color:var(--accent);
-    font-size:14px;
-    cursor:pointer;
+  .btn{
     font-family:inherit;
-    text-decoration:underline;
-    padding:0;
+    font-size:13px;
+    padding:7px 14px;
+    border-radius:10px;
+    border:1.5px solid transparent;
+    cursor:pointer;
+    transition:.15s;
+    font-weight:600;
   }
-  .reset:hover{opacity:.75}
+  .btn-ghost{
+    background:#fff;
+    border-color:var(--line);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{border-color:var(--purple-mid);background:var(--purple-soft)}
 
-  .result-info{
-    font-size:14px;
+  .count{
+    font-size:13px;
     color:var(--muted);
-    margin:0 0 16px;
+    margin-right:auto;
   }
-  .result-info strong{color:var(--ink)}
+  .count strong{color:var(--ink)}
 
   .card{
     border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:18px 20px;
-    margin-bottom:14px;
-    transition:.2s;
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:10px;
     background:#fff;
+    transition:.2s;
   }
-  .card.dim{opacity:.35}
   .card.match{
     border-color:var(--accent);
     box-shadow:0 0 0 3px var(--accent-soft);
+    background:#fdfbff;
   }
   .card h3{
-    margin:0 0 10px;
-    font-size:18px;
+    margin:0 0 6px;
+    font-size:15.5px;
     display:flex;
     align-items:baseline;
     gap:10px;
     flex-wrap:wrap;
+    color:var(--purple-deep);
   }
   .card .num{
     display:inline-flex;
-    width:26px;height:26px;
+    width:22px;height:22px;
     align-items:center;justify-content:center;
-    background:var(--chip);
+    background:var(--purple-soft);
     border-radius:50%;
-    font-size:13px;
-    color:var(--muted);
-    font-weight:600;
+    font-size:11.5px;
+    color:var(--purple);
+    font-weight:700;
     flex:0 0 auto;
   }
   .card.match .num{background:var(--accent);color:#fff}
-  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-  .tag{
-    font-size:12px;
-    background:var(--chip);
-    color:var(--muted);
-    padding:3px 9px;
-    border-radius:6px;
-    cursor:pointer;
-    border:1px solid transparent;
-    font-family:inherit;
-  }
-  .tag:hover{border-color:var(--accent);color:var(--accent)}
-  .tag.hit{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
-  .card p{margin:10px 0 0;font-size:15px;color:#374151}
-  .card .why{
-    margin-top:12px;
-    padding:10px 12px;
-    background:var(--warn);
-    border-left:3px solid var(--warn-line);
-    border-radius:6px;
-    font-size:13.5px;
-    color:#7c4a00;
-  }
-  .card .why strong{color:#5c3700}
   .card .acc{
-    margin-top:8px;
-    font-size:13.5px;
+    font-size:12.5px;
     color:var(--muted);
+    margin-bottom:6px;
   }
   .card .acc b{color:var(--ink)}
+  .card p{margin:6px 0 0;font-size:13.5px;color:#3d3454}
+  .card .why{
+    margin-top:10px;
+    padding:8px 12px;
+    background:var(--purple-soft);
+    border-left:3px solid var(--purple-mid);
+    border-radius:6px;
+    font-size:12.5px;
+    color:#5a4a75;
+  }
+  .card .why strong{color:var(--purple-deep)}
   .hidden{display:none !important}
 
   .empty{
     text-align:center;
-    padding:30px 20px;
+    padding:24px 20px;
     color:var(--muted);
     border:1px dashed var(--line);
-    border-radius:var(--radius);
-    font-size:14px;
+    border-radius:14px;
+    font-size:13.5px;
   }
 
+  @media (max-width:820px){
+    .grid{grid-template-columns:repeat(4,1fr)}
+  }
   @media (max-width:600px){
-    .wrap{padding:16px 14px 40px}
-    .panel{padding:16px}
-    .card{padding:16px}
-    .card h3{font-size:16px}
+    .header{padding:12px 16px}
+    .header h1{font-size:15.5px}
+    .body{padding:12px 14px 14px}
+    .grid{grid-template-columns:repeat(3,1fr);gap:6px}
+    .tile{padding:10px 6px 8px; min-height:88px; gap:6px}
+    .tile .icon{width:36px;height:36px}
+    .tile .icon svg{width:32px;height:32px}
+    .tile .label{font-size:10.5px}
+    .card{padding:12px 14px}
+  }
+  @media (max-width:400px){
+    .grid{grid-template-columns:repeat(2,1fr)}
   }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="frame">
 
-  <div class="panel">
-    <h2>Настройте статью под себя</h2>
-    <p class="sub">Выберите отрасль и особенность бизнеса — релевантные проверки подсветятся, а «что болит» вы увидите внутри карточек.</p>
+  <div class="header">
+    <h1>Выберите отрасль — останутся только релевантные проверки.</h1>
+  </div>
 
-    <div class="filter-group">
-      <span class="filter-label">Отрасль / модель бизнеса</span>
-      <div class="chips" id="chips-industry"></div>
-    </div>
+  <div class="body">
 
-    <div class="filter-group">
-      <span class="filter-label">Особенность бизнеса</span>
-      <div class="chips" id="chips-feature"></div>
-    </div>
+    <div class="grid" id="industryGrid"></div>
 
     <div class="actions">
-      <label class="toggle">
-        <input type="checkbox" id="onlyRelevant">
-        Оставить только релевантное
-      </label>
-      <button class="reset" id="resetBtn">Сбросить фильтр</button>
+      <span class="count" id="countInfo">Показаны все проверки. Отметьте отрасль.</span>
+      <button class="btn btn-ghost" id="resetBtn" type="button">Сбросить</button>
     </div>
+
+    <div id="cards"></div>
+
+    <div class="empty hidden" id="emptyState">
+      По выбранным отраслям совпадений нет. Попробуйте выбрать другую.
+    </div>
+
   </div>
-
-  <p class="result-info" id="resultInfo"></p>
-
-  <div id="cards"></div>
-
-  <div class="empty hidden" id="emptyState">
-    По выбранному сочетанию фильтров совпадений нет.<br>
-    Попробуйте убрать один из фильтров.
-  </div>
-
 </div>
 
 <script>
 (function(){
   "use strict";
 
-  // ---------- СПРАВОЧНИКИ ТЕГОВ (только отрасль + особенность) ----------
-  var DICT = {
-    industry: {
-      "Дистрибуция и ритейл":       ["distrib","retail"],
-      "Оптовая торговля":           ["wholesale","distrib"],
-      "Производство":               ["manufact"],
-      "Строительство и подряд":     ["construct","project"],
-      "Агро и сезонный бизнес":     ["agro","season"],
-      "Транспорт и логистика":      ["transport","logistics"],
-      "Добыча и промышленность":    ["mining","manufact"],
-      "IT, телеком, разработка":    ["it","telecom"],
-      "Быстрорастущие компании":    ["fastgrow","startup"],
-      "Напряжённая ликвидность":    ["tightliq"]
-    },
-    feature: {
-      "Длинный цикл":               ["longcycle"],
-      "Сезонность":                 ["season"],
-      "Отсрочки клиентам":          ["deferred"],
-      "Предоплаты поставщикам":     ["prepay"],
-      "CAPEX и инвестпроекты":      ["capex"],
-      "Крупные авансы":             ["bigadvance"],
-      "НЗП и незакрытые заказы":    ["wip"],
-      "Капитализация затрат":       ["capitalize"],
-      "Один крупный клиент / банк": ["oneclient"]
-    }
+  /* =====================================================================
+     КАРТИНКИ ОТРАСЛЕЙ
+     ---------------------------------------------------------------------
+     Положите PNG-файлы рядом с этим HTML (в папку icons/) и назовите так,
+     как указано ниже. Если файл не найден — автоматически подставится
+     встроенная SVG-иконка, панель все равно будет работать.
+
+     icons/distrib.png      — опт и дистрибуция
+     icons/retail.png       — розничные сети
+     icons/manufact.png     — производство
+     icons/agro.png         — агробизнес
+     icons/industry.png     — промышленность
+     icons/transport.png    — транспорт
+     icons/logistics.png    — логистика
+     icons/mining.png       — добывающие компании
+     icons/season.png       — сезонный бизнес
+     icons/construct.png    — строительство
+     icons/contract.png     — подрядчики
+     icons/engineering.png  — инжиниринг
+     icons/project.png      — проектный бизнес
+     icons/it.png           — IT и телеком
+     icons/science.png      — научные компании
+     ===================================================================== */
+
+  var IMG = {
+    distrib:     'icons/distrib.png',
+    retail:      'icons/retail.png',
+    manufact:    'icons/manufact.png',
+    agro:        'icons/agro.png',
+    industry:    'icons/industry.png',
+    transport:   'icons/transport.png',
+    logistics:   'icons/logistics.png',
+    mining:      'icons/mining.png',
+    season:      'icons/season.png',
+    construct:   'icons/construct.png',
+    contract:    'icons/contract.png',
+    engineering: 'icons/engineering.png',
+    project:     'icons/project.png',
+    it:          'icons/it.png',
+    science:     'icons/science.png'
   };
 
+  // Фолбэк — SVG-иконки, если PNG не загрузился
+  var SVG = {
+    distrib:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 10h4l3.5 20h22L39 16H13"/>' +
+      '<circle cx="17" cy="37" r="3"/><circle cx="33" cy="37" r="3"/>' +
+      '<rect x="19" y="14" width="10" height="9" fill="currentColor" opacity=".25" stroke="none" rx="1"/>' +
+      '<rect x="27" y="18" width="9" height="6" fill="currentColor" opacity=".4" stroke="none" rx="1"/>' +
+      '</svg>',
+    retail:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M9 20L12 10h24l3 10"/>' +
+      '<path d="M7 20h34v3H7z" fill="currentColor" opacity=".2"/>' +
+      '<path d="M11 23v15h26V23"/>' +
+      '<path d="M20 38v-9h8v9"/>' +
+      '</svg>',
+    manufact:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 40V20l9 5v-6l9 5v-6l9 5v-6l9 5v18z" fill="currentColor" opacity=".14"/>' +
+      '<path d="M6 40V20l9 5v-6l9 5v-6l9 5v-6l9 5v18z"/>' +
+      '<path d="M6 40h36"/>' +
+      '<path d="M14 20v-6h3v8"/>' +
+      '<path d="M13 28h4M22 28h4M31 28h4"/>' +
+      '</svg>',
+    agro:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M24 12v22"/><path d="M24 14c-3 0-5 2-5 5s2 5 5 5"/>' +
+      '<path d="M24 14c3 0 5 2 5 5s-2 5-5 5"/>' +
+      '<path d="M24 22c-3 0-5 2-5 5s2 5 5 5"/>' +
+      '<path d="M24 22c3 0 5 2 5 5s-2 5-5 5"/>' +
+      '<path d="M18 36h12"/>' +
+      '<circle cx="38" cy="13" r="4" fill="currentColor" opacity=".35" stroke="none"/>' +
+      '<circle cx="38" cy="13" r="4"/>' +
+      '</svg>',
+    industry:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 40V22l10 6v-8l10 6v-8l10 6V40z" fill="currentColor" opacity=".14"/>' +
+      '<path d="M6 40V22l10 6v-8l10 6v-8l10 6V40z"/>' +
+      '<path d="M6 40h36"/>' +
+      '<path d="M14 14v8h3v-8zM28 14v8h3v-8z"/>' +
+      '</svg>',
+    transport:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="5" y="24" width="22" height="14" rx="2" fill="currentColor" opacity=".12"/>' +
+      '<rect x="5" y="24" width="22" height="14" rx="2"/>' +
+      '<path d="M27 28h8l5 5v5h-13z"/>' +
+      '<circle cx="12" cy="40" r="3"/><circle cx="33" cy="40" r="3"/>' +
+      '<path d="M30 10l10 5-10 5z" fill="currentColor" opacity=".3"/>' +
+      '</svg>',
+    logistics:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="5" y="26" width="20" height="12" rx="2" fill="currentColor" opacity=".12"/>' +
+      '<rect x="5" y="26" width="20" height="12" rx="2"/>' +
+      '<circle cx="11" cy="40" r="2.5"/><circle cx="23" cy="40" r="2.5"/>' +
+      '<path d="M27 30h9l5 4v4h-14z"/><circle cx="33" cy="40" r="2.5"/>' +
+      '<rect x="10" y="10" width="10" height="7" fill="currentColor" opacity=".25" stroke="none" rx="1"/>' +
+      '<rect x="10" y="17" width="10" height="6" fill="currentColor" opacity=".4" stroke="none" rx="1"/>' +
+      '</svg>',
+    mining:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M24 8l-8 30M24 8l8 30M14 26h20M18 38h12"/>' +
+      '<rect x="20" y="5" width="8" height="6" fill="currentColor" opacity=".3" stroke="none" rx="1"/>' +
+      '</svg>',
+    season:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<circle cx="34" cy="14" r="5" fill="currentColor" opacity=".3" stroke="none"/>' +
+      '<circle cx="34" cy="14" r="5"/>' +
+      '<path d="M34 4v3M34 21v3M44 14h-3M27 14h-3M41 7l-2 2M29 19l-2 2M41 21l-2-2M29 9l-2-2"/>' +
+      '<path d="M14 36a6 6 0 006-6c0-3-6-10-6-10s-6 7-6 10a6 6 0 006 6z" fill="currentColor" opacity=".2"/>' +
+      '<path d="M14 36a6 6 0 006-6c0-3-6-10-6-10s-6 7-6 10a6 6 0 006 6z"/>' +
+      '</svg>',
+    construct:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M6 40h36"/>' +
+      '<path d="M14 40V16h10v24" fill="currentColor" opacity=".12"/>' +
+      '<path d="M14 40V16h10v24"/>' +
+      '<path d="M4 16h26L24 8h-6z" fill="currentColor" opacity=".2"/>' +
+      '<path d="M4 16h26L24 8h-6z"/>' +
+      '<path d="M42 26v10"/><path d="M40 36h4"/>' +
+      '</svg>',
+    contract:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M24 8c-8 0-13 5-13 12v6h26v-6c0-7-5-12-13-12z" fill="currentColor" opacity=".25"/>' +
+      '<path d="M24 8c-8 0-13 5-13 12v6h26v-6c0-7-5-12-13-12z"/>' +
+      '<path d="M11 26v2c0 2 1 3 3 3h20c2 0 3-1 3-3v-2"/>' +
+      '</svg>',
+    engineering:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M22 10l-12 28"/>' +
+      '<path d="M26 10l12 28"/>' +
+      '<path d="M15 24h18"/>' +
+      '<circle cx="24" cy="11" r="3" fill="currentColor" opacity=".3"/>' +
+      '<circle cx="24" cy="11" r="3"/>' +
+      '</svg>',
+    project:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="8" y="16" width="32" height="22" rx="3" fill="currentColor" opacity=".12"/>' +
+      '<rect x="8" y="16" width="32" height="22" rx="3"/>' +
+      '<path d="M24 8v8"/>' +
+      '<rect x="19" y="9" width="10" height="4" fill="currentColor" opacity=".3" stroke="none" rx="1"/>' +
+      '<path d="M24 22v10"/>' +
+      '<path d="M19 28h10"/>' +
+      '</svg>',
+    it:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="5" y="10" width="24" height="17" rx="2" fill="currentColor" opacity=".12"/>' +
+      '<rect x="5" y="10" width="24" height="17" rx="2"/>' +
+      '<path d="M2 31h30"/>' +
+      '<rect x="31" y="18" width="13" height="19" rx="2" fill="currentColor" opacity=".12"/>' +
+      '<rect x="31" y="18" width="13" height="19" rx="2"/>' +
+      '<path d="M35 33h5"/>' +
+      '</svg>',
+    science:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M20 8h8v8l6 12a4 4 0 01-4 6H18a4 4 0 01-4-6l6-12z" fill="currentColor" opacity=".14"/>' +
+      '<path d="M20 8h8v8l6 12a4 4 0 01-4 6H18a4 4 0 01-4-6l6-12z"/>' +
+      '<path d="M18 8h12"/>' +
+      '<path d="M16 34h16"/>' +
+      '</svg>'
+  };
+
+  // ---------- ОТРАСЛИ (15 = 5 x 3) ----------
+  var INDUSTRIES = [
+    { id:'distrib',     label:'Опт и дистрибуция',   tags:['wholesale','distrib'] },
+    { id:'retail',      label:'Розничные сети',      tags:['retail'] },
+    { id:'manufact',    label:'Производство',        tags:['manufact'] },
+    { id:'agro',        label:'Агробизнес',          tags:['agro'] },
+    { id:'industry',    label:'Промышленность',      tags:['industry'] },
+    { id:'transport',   label:'Транспорт',           tags:['transport'] },
+    { id:'logistics',   label:'Логистика',           tags:['logistics'] },
+    { id:'mining',      label:'Добывающие компании', tags:['mining'] },
+    { id:'season',      label:'Сезонный бизнес',     tags:['season'] },
+    { id:'construct',   label:'Строительство',       tags:['construct'] },
+    { id:'contract',    label:'Подрядчики',          tags:['contract'] },
+    { id:'engineering', label:'Инжиниринг',          tags:['engineering'] },
+    { id:'project',     label:'Проектный бизнес',    tags:['project'] },
+    { id:'it',          label:'IT и телеком',        tags:['it'] },
+    { id:'science',     label:'Научные компании',    tags:['science'] }
+  ];
+
   // ---------- ШЕСТЬ ПРОВЕРОК ----------
-  // В тегах — только отрасль и особенность. «Что болит» — в тексте карточки.
   var CARDS = [
     {
       n: 1,
-      title: "«Треугольник ликвидности»: запасы + дебиторка + кредиторка",
-      accounts: "10 · 41 · 43 · 60.01 · 62.01 · 90.01 · 51",
-      tags: ["distrib","retail","wholesale","manufact","agro","transport","fastgrow","season","deferred","prepay"],
-      text: "Запасы и дебиторка растут быстрее выручки, а кредиторка не компенсирует рост. Ликвидность связывается в товаре и расчётах с клиентами.",
-      why: "Что болит: <strong>рост есть, а денег нет</strong>. Компания растёт, но не высвобождает ликвидность, а связывает её в товаре и расчётах с клиентами."
+      title: '«Треугольник ликвидности»: запасы + дебиторка + кредиторка',
+      accounts: '10 · 41 · 43 · 60.01 · 62.01 · 90.01 · 51',
+      tags: ['wholesale','distrib','retail','manufact','industry','agro','transport','logistics','season'],
+      text: 'Запасы и дебиторка растут быстрее выручки, а кредиторка не компенсирует рост. Ликвидность связывается в товаре и расчетах с клиентами.',
+      why: 'В чем опасность: <strong>рост есть, а денег нет</strong>. Компания растет, но не высвобождает ликвидность, а связывает ее в товаре и расчетах с клиентами.'
     },
     {
       n: 2,
-      title: "«Качели ликвидности»: длинный актив + короткие обязательства",
-      accounts: "01 · 07 · 08 · 60 · 76 · 66 · 67",
-      tags: ["construct","project","mining","manufact","longcycle","capex","tightliq"],
-      text: "Растут капвложения и одновременно — краткосрочные кредиты и долг перед подрядчиками. Особенно опасен синхронный рост 08 и 66, если сроки ввода сдвигаются.",
-      why: "Что болит: <strong>длинный проект финансируется короткими деньгами</strong>. Пока банк продлевает лимит и проект идёт по графику — равновесие держится."
+      title: '«Качели ликвидности»: длинный актив + короткие обязательства',
+      accounts: '01 · 07 · 08 · 60 · 76 · 66 · 67',
+      tags: ['construct','contract','engineering','project','mining','manufact','industry'],
+      text: 'Растут капвложения и одновременно — краткосрочные кредиты и долг перед подрядчиками. Особенно опасен синхронный рост 08 и 66, если сроки ввода сдвигаются.',
+      why: 'В чем опасность: <strong>длинный проект финансируется короткими деньгами</strong>. Пока банк продлевает лимит и проект идет по графику — равновесие держится.'
     },
     {
       n: 3,
-      title: "«Петля обязательств»: банк + поставщики + налоги и зарплата",
-      accounts: "51 · 60 · 66 · 67 · 68 · 69 · 70",
-      tags: ["retail","distrib","season","tightliq","oneclient","fastgrow","agro","transport"],
-      text: "Все обязательства закрываются, но в последние допустимые даты. Компания живёт от одного крупного поступления до другого.",
-      why: "Что болит: <strong>жизнь от поступления до поступления</strong>. Достаточно сбоя в одном звене — и придётся выбирать, что оплачивать первым."
+      title: '«Петля обязательств»: банк + поставщики + налоги и зарплата',
+      accounts: '51 · 60 · 66 · 67 · 68 · 69 · 70',
+      tags: ['retail','distrib','wholesale','season','transport','logistics','agro'],
+      text: 'Все обязательства закрываются, но в последние допустимые даты. Компания живет от одного крупного поступления до другого.',
+      why: 'В чем опасность: <strong>жизнь от поступления до поступления</strong>. Достаточно сбоя в одном звене — и придется выбирать, что оплачивать первым.'
     },
     {
       n: 4,
-      title: "«Налоговый нож»: НДС с полученных авансов",
-      accounts: "60.02 · 62.02 · 68 · субсчета НДС по авансам",
-      tags: ["distrib","construct","it","project","wholesale","prepay","bigadvance","longcycle","manufact"],
-      text: "Получили аванс — начислили НДС, перечислили деньги поставщику — а вычет ещё не заявлен. Разрыв финансируется из своих средств.",
-      why: "Что болит: <strong>ликвидность выпадает из оборота</strong>. Чем крупнее аванс и дольше период до вычета, тем больше своих денег надо вложить в налоговый разрыв."
+      title: '«Налоговый нож»: НДС с полученных авансов',
+      accounts: '60.02 · 62.02 · 68 · субсчета НДС по авансам',
+      tags: ['distrib','construct','it','project','wholesale','manufact','engineering'],
+      text: 'Получили аванс — начислили НДС, перечислили деньги поставщику — а вычет еще не заявлен. Разрыв финансируется из своих средств.',
+      why: 'В чем опасность: <strong>ликвидность выпадает из оборота</strong>. Чем крупнее аванс и дольше период до вычета, тем больше своих денег надо вложить в налоговый разрыв.'
     },
     {
       n: 5,
-      title: "«Воронка незавершёнки»: затраты растут, но результатов нет",
-      accounts: "20 · 23 · 25 · 26 · 43 · 90.02",
-      tags: ["manufact","construct","project","longcycle","wip","agro","season","mining"],
-      text: "Затраты идут на 20 и 23, НЗП растёт, а выпуск по 43 не увеличивается. Ресурсы уходят — готовой продукции нет.",
-      why: "Что болит: <strong>непонятно, где нормальный цикл, а где проблемный проект</strong>. Внутри воронки могут скрываться брак, дефицит комплектующих или заморозка."
+      title: '«Воронка незавершенки»: затраты растут, но результатов нет',
+      accounts: '20 · 23 · 25 · 26 · 43 · 90.02',
+      tags: ['manufact','industry','construct','contract','project','agro','mining','engineering'],
+      text: 'Затраты идут на 20 и 23, НЗП растет, а выпуск по 43 не увеличивается. Ресурсы уходят — готовой продукции нет.',
+      why: 'В чем опасность: <strong>непонятно, где нормальный цикл, а где проблемный проект</strong>. Внутри воронки могут скрываться брак, дефицит комплектующих или заморозка.'
     },
     {
       n: 6,
-      title: "«Лифт прибыли»: расходы вниз, активы вверх",
-      accounts: "04 · 08 · 97 · 20 · 26 · 44 · 90.02 · 99",
-      tags: ["it","telecom","project","fastgrow","startup","capitalize","longcycle"],
-      text: "Растут 04, 08 или 97, а текущие расходы сокращаются. Прибыль растёт не за счёт операций, а за счёт момента признания затрат.",
-      why: "Что болит: <strong>прибыль сегодня — нагрузка завтра</strong>. Амортизация, обесценение или списание, если активы не дадут ожидаемого эффекта."
+      title: '«Лифт прибыли»: расходы вниз, активы вверх',
+      accounts: '04 · 08 · 97 · 20 · 26 · 44 · 90.02 · 99',
+      tags: ['it','science','project','engineering'],
+      text: 'Растут 04, 08 или 97, а текущие расходы сокращаются. Прибыль растет не за счет операций, а за счет момента признания затрат.',
+      why: 'В чем опасность: <strong>прибыль сегодня — нагрузка завтра</strong>. Амортизация, обесценение или списание, если активы не дадут ожидаемого эффекта.'
     }
   ];
 
   // ---------- СОСТОЯНИЕ ----------
-  var state = {
-    industry: new Set(),
-    feature: new Set()
-  };
+  var selected = new Set();
 
-  var cardsEl   = document.getElementById("cards");
-  var infoEl    = document.getElementById("resultInfo");
-  var emptyEl   = document.getElementById("emptyState");
-  var onlyRel   = document.getElementById("onlyRelevant");
-  var resetBtn  = document.getElementById("resetBtn");
+  var gridEl   = document.getElementById('industryGrid');
+  var cardsEl  = document.getElementById('cards');
+  var countEl  = document.getElementById('countInfo');
+  var emptyEl  = document.getElementById('emptyState');
+  var resetBtn = document.getElementById('resetBtn');
 
-  // ---------- РЕНДЕР ЧИПСОВ ----------
-  function renderChips(containerId, groupKey){
-    var box = document.getElementById(containerId);
-    Object.keys(DICT[groupKey]).forEach(function(label){
-      var btn = document.createElement("button");
-      btn.className = "chip";
-      btn.type = "button";
-      btn.textContent = label;
-      btn.dataset.group = groupKey;
-      btn.dataset.label = label;
-      btn.addEventListener("click", function(){
-        if (state[groupKey].has(label)) {
-          state[groupKey].delete(label);
-          btn.classList.remove("active");
+  // ---------- ПЛИТКИ ----------
+  function renderGrid(){
+    INDUSTRIES.forEach(function(ind){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tile';
+      btn.dataset.id = ind.id;
+
+      var iconWrap = document.createElement('span');
+      iconWrap.className = 'icon';
+
+      var img = document.createElement('img');
+      img.src = IMG[ind.id];
+      img.alt = ind.label;
+      img.onerror = function(){
+        iconWrap.innerHTML = SVG[ind.id] || '';
+      };
+      iconWrap.appendChild(img);
+
+      var label = document.createElement('span');
+      label.className = 'label';
+      label.textContent = ind.label;
+
+      btn.appendChild(iconWrap);
+      btn.appendChild(label);
+
+      btn.addEventListener('click', function(){
+        if (selected.has(ind.id)) {
+          selected.delete(ind.id);
+          btn.classList.remove('active');
         } else {
-          state[groupKey].add(label);
-          btn.classList.add("active");
+          selected.add(ind.id);
+          btn.classList.add('active');
         }
         apply();
       });
-      box.appendChild(btn);
+
+      gridEl.appendChild(btn);
+    });
+  }
+
+  // ---------- КАРТОЧКИ ----------
+  function renderCards(){
+    CARDS.forEach(function(c){
+      var el = document.createElement('article');
+      el.className = 'card';
+      el.dataset.tags = c.tags.join('|');
+
+      var h = document.createElement('h3');
+      h.innerHTML = '<span class="num">' + c.n + '</span><span>' + c.title + '</span>';
+
+      var acc = document.createElement('div');
+      acc.className = 'acc';
+      acc.innerHTML = '<b>Счета:</b> ' + c.accounts;
+
+      var p = document.createElement('p');
+      p.textContent = c.text;
+
+      var why = document.createElement('div');
+      why.className = 'why';
+      why.innerHTML = c.why;
+
+      el.appendChild(h);
+      el.appendChild(acc);
+      el.appendChild(p);
+      el.appendChild(why);
+      cardsEl.appendChild(el);
     });
   }
 
   // ---------- СБОР АКТИВНЫХ ТЕГОВ ----------
   function activeTags(){
     var tags = new Set();
-    ["industry","feature"].forEach(function(group){
-      state[group].forEach(function(label){
-        DICT[group][label].forEach(function(t){ tags.add(t); });
-      });
+    INDUSTRIES.forEach(function(ind){
+      if (selected.has(ind.id)) {
+        ind.tags.forEach(function(t){ tags.add(t); });
+      }
     });
     return tags;
   }
 
-  // ---------- РЕНДЕР КАРТОЧЕК ----------
-  function renderCards(){
-    CARDS.forEach(function(c){
-      var el = document.createElement("article");
-      el.className = "card";
-      el.dataset.id = c.n;
-
-      var h = document.createElement("h3");
-      h.innerHTML = '<span class="num">' + c.n + '</span><span>' + c.title + '</span>';
-
-      var acc = document.createElement("div");
-      acc.className = "acc";
-      acc.innerHTML = "<b>Счета:</b> " + c.accounts;
-
-      var tagsBox = document.createElement("div");
-      tagsBox.className = "tags";
-
-      var visible = humanTags(c.tags);
-      visible.forEach(function(t){
-        var s = document.createElement("span");
-        s.className = "tag";
-        s.textContent = t.label;
-        s.dataset.tag = t.code;
-        s.addEventListener("click", function(){
-          activateByTag(t.code);
-        });
-        tagsBox.appendChild(s);
-      });
-
-      var p = document.createElement("p");
-      p.textContent = c.text;
-
-      var why = document.createElement("div");
-      why.className = "why";
-      why.innerHTML = c.why;
-
-      el.appendChild(h);
-      el.appendChild(acc);
-      el.appendChild(tagsBox);
-      el.appendChild(p);
-      el.appendChild(why);
-      el.dataset.tags = c.tags.join("|");
-      cardsEl.appendChild(el);
-    });
-  }
-
-  // человекочитаемые бейджи
-  function humanTags(codes){
-    var map = {
-      distrib:   "Дистрибуция",
-      retail:    "Ритейл",
-      wholesale: "Опт",
-      manufact:  "Производство",
-      construct: "Строительство",
-      project:   "Проектный бизнес",
-      agro:      "Агро",
-      season:    "Сезонность",
-      transport: "Транспорт",
-      logistics: "Логистика",
-      mining:    "Добыча",
-      it:        "IT / разработка",
-      telecom:   "Телеком",
-      fastgrow:  "Быстрый рост",
-      startup:   "Стартап",
-      tightliq:  "Напряжённая ликвидность",
-      longcycle: "Длинный цикл",
-      deferred:  "Отсрочки клиентам",
-      prepay:    "Предоплаты",
-      capex:     "CAPEX",
-      bigadvance:"Крупные авансы",
-      wip:       "НЗП",
-      capitalize:"Капитализация затрат",
-      oneclient: "Один клиент / банк"
-    };
-    var out = [];
-    codes.forEach(function(c){
-      if (map[c]) out.push({ code:c, label:map[c] });
-    });
-    return out;
-  }
-
-  // клик по бейджу = активировать соответствующий чип
-  function activateByTag(code){
-    ["industry","feature"].forEach(function(group){
-      Object.keys(DICT[group]).forEach(function(label){
-        if (DICT[group][label].indexOf(code) !== -1 && !state[group].has(label)) {
-          state[group].add(label);
-          var btn = document.querySelector('.chip[data-group="'+group+'"][data-label="'+label+'"]');
-          if (btn) btn.classList.add("active");
-        }
-      });
-    });
-    apply();
-  }
-
-  // ---------- ПРИМЕНЕНИЕ ФИЛЬТРА ----------
+  // ---------- ФИЛЬТР ----------
   function apply(){
-    var active = activeTags();
-    var hasFilter = active.size > 0;
-
-    var cards = cardsEl.querySelectorAll(".card");
+    var tags = activeTags();
+    var hasFilter = tags.size > 0;
+    var cards = cardsEl.querySelectorAll('.card');
     var matchCount = 0;
 
     cards.forEach(function(card){
-      var tags = card.dataset.tags.split("|");
-      var hits = tags.filter(function(t){ return active.has(t); });
-      var isMatch = hasFilter ? hits.length > 0 : true;
+      var cardTags = card.dataset.tags.split('|');
+      var isMatch = !hasFilter || cardTags.some(function(t){ return tags.has(t); });
 
-      card.querySelectorAll(".tag").forEach(function(b){
-        if (active.has(b.dataset.tag)) b.classList.add("hit");
-        else b.classList.remove("hit");
-      });
-
-      card.classList.toggle("match", hasFilter && isMatch);
-      card.classList.toggle("dim", hasFilter && !isMatch && !onlyRel.checked);
-
-      if (onlyRel.checked) {
-        card.classList.toggle("hidden", hasFilter && !isMatch);
-      } else {
-        card.classList.remove("hidden");
-      }
+      card.classList.toggle('match', hasFilter && isMatch);
+      card.classList.toggle('hidden', hasFilter && !isMatch);
 
       if (isMatch) matchCount++;
     });
 
     if (!hasFilter) {
-      infoEl.innerHTML = "Показаны все шесть проверок. Выберите отрасль и особенность бизнеса — релевантные подсветятся.";
+      countEl.innerHTML = 'Показаны все проверки. Отметьте отрасль.';
     } else {
-      infoEl.innerHTML = "Подходит проверок: <strong>" + matchCount + " из 6</strong>. Подсвечены релевантные бейджи.";
+      countEl.innerHTML = 'Подходит проверок: <strong>' + matchCount + ' из 6</strong>.';
     }
 
-    emptyEl.classList.toggle("hidden", !(hasFilter && onlyRel.checked && matchCount === 0));
+    emptyEl.classList.toggle('hidden', !(hasFilter && matchCount === 0));
   }
 
   // ---------- СБРОС ----------
-  resetBtn.addEventListener("click", function(){
-    ["industry","feature"].forEach(function(g){ state[g].clear(); });
-    document.querySelectorAll(".chip.active").forEach(function(c){ c.classList.remove("active"); });
-    onlyRel.checked = false;
+  resetBtn.addEventListener('click', function(){
+    selected.clear();
+    document.querySelectorAll('.tile.active').forEach(function(t){ t.classList.remove('active'); });
     apply();
   });
 
-  onlyRel.addEventListener("change", apply);
-
   // ---------- СТАРТ ----------
-  renderChips("chips-industry", "industry");
-  renderChips("chips-feature",  "feature");
+  renderGrid();
   renderCards();
   apply();
 

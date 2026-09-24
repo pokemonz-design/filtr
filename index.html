@@ -203,6 +203,46 @@
     font-size:13.5px;
   }
 
+  /* ---------- НИЖНЯЯ ПАНЕЛЬ КНОПОК ---------- */
+  .footer-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary:hover{background:var(--purple-deep);border-color:var(--purple-deep)}
+  .btn-primary svg{
+    width:16px;
+    height:16px;
+    display:block;
+    flex:0 0 auto;
+  }
+  .btn-outline{
+    background:#fff;
+    color:var(--accent);
+    border-color:var(--accent);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-outline:hover{background:var(--accent-soft)}
+  .btn-outline svg{
+    width:16px;
+    height:16px;
+    display:block;
+    flex:0 0 auto;
+  }
+
   @media (max-width:820px){
     .grid{grid-template-columns:repeat(4,1fr)}
   }
@@ -215,9 +255,24 @@
     .tile .icon{width:36px;height:36px}
     .tile .label{font-size:10.5px}
     .card{padding:12px 14px}
+    .footer-actions{flex-direction:column}
+    .footer-actions .btn{width:100%;justify-content:center}
   }
   @media (max-width:400px){
     .grid{grid-template-columns:repeat(2,1fr)}
+  }
+
+  /* ---------- ПЕЧАТЬ ---------- */
+  @media print{
+    .header{background:var(--purple) !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .tile,
+    .card,
+    .card .why{ -webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .actions,
+    .footer-actions{display:none !important}
+    .tile{cursor:default}
+    .card{page-break-inside:avoid; break-inside:avoid}
+    .body{padding:0}
   }
 </style>
 </head>
@@ -243,6 +298,26 @@
       По выбранным отраслям совпадений нет. Попробуйте выбрать другую
     </div>
 
+    <!-- НИЖНЯЯ ПАНЕЛЬ КНОПОК -->
+    <div class="footer-actions">
+      <button class="btn btn-primary" id="pdfBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/>
+          <path d="M7 10l5 5 5-5"/>
+          <path d="M5 21h14"/>
+        </svg>
+        Сохранить в PDF
+      </button>
+      <button class="btn btn-outline" id="printBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9V3h12v6"/>
+          <rect x="4" y="9" width="16" height="8" rx="1.5"/>
+          <path d="M8 17h8v4H8z"/>
+        </svg>
+        Распечатать
+      </button>
+    </div>
+
   </div>
 </div>
 
@@ -257,7 +332,7 @@
      Только PNG. SVG-фолбэка нет.
 
      opt.png        — Оптовая торговля
-     ica.png    — Розничные сети
+     roznica.png    — Розничные сети
      proizv.png     — Производство
      agro.png       — Агробизнес
      transport.png  — Транспорт
@@ -315,7 +390,7 @@
       n: 2,
       title: '«Качели ликвидности»: длинный актив + короткие обязательства',
       accounts: '01 · 07 · 08 · 60 · 76 · 66 · 67',
-      tags: ['proizv','transport','logist','Roznica','agro','dobycha'],
+      tags: ['proizv','transport','logist','roznica','agro','dobycha'],
       text: 'Растут капвложения и одновременно — краткосрочные кредиты и долг перед подрядчиками. Особенно опасен синхронный рост 08 и 66, если сроки ввода сдвигаются.',
       why: 'В чем опасность: <strong>длинный проект финансируется короткими деньгами</strong>. Пока банк продлевает лимит и проект идет по графику — равновесие держится.'
     },
@@ -361,6 +436,8 @@
   var countEl  = document.getElementById('countInfo');
   var emptyEl  = document.getElementById('emptyState');
   var resetBtn = document.getElementById('resetBtn');
+  var pdfBtn   = document.getElementById('pdfBtn');
+  var printBtn = document.getElementById('printBtn');
 
   // ---------- ПЛИТКИ ----------
   function renderGrid(){
@@ -472,6 +549,18 @@
     selected.clear();
     document.querySelectorAll('.tile.active').forEach(function(t){ t.classList.remove('active'); });
     apply();
+  });
+
+  // ---------- СОХРАНИТЬ В PDF ----------
+  pdfBtn.addEventListener('click', function(){
+    // Открываем системный диалог печати: пользователь выбирает
+    // «Сохранить как PDF» в списке принтеров.
+    window.print();
+  });
+
+  // ---------- РАСПЕЧАТАТЬ ----------
+  printBtn.addEventListener('click', function(){
+    window.print();
   });
 
   // ---------- СТАРТ ----------

@@ -6,15 +6,15 @@
 <title>ОСВ как рентгеновский снимок — выберите отрасль</title>
 <style>
   :root{
-    --purple:#5b3b8c;
-    --purple-deep:#3f2868;
-    --purple-soft:#f3edf9;
-    --purple-mid:#e4d7f0;
-    --ink:#241a35;
+    --purple:#77408c;
+    --purple-deep:#5a2f6b;
+    --purple-soft:#ede0f3;
+    --purple-mid:#d4bfdf;
+    --ink:#2a1830;
     --muted:#7a7191;
-    --line:#e7def1;
-    --accent:#6f42a8;
-    --accent-soft:#efe5f8;
+    --line:#e8dcef;
+    --accent:#77408c;
+    --accent-soft:#ede0f3;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -83,7 +83,7 @@
   .tile.active{
     background:var(--accent-soft);
     border-color:var(--accent);
-    box-shadow:0 0 0 3px rgba(111,66,168,.12);
+    box-shadow:0 0 0 3px rgba(119,64,140,.15);
   }
   .tile .icon{
     width:46px;
@@ -152,7 +152,7 @@
   .card.match{
     border-color:var(--accent);
     box-shadow:0 0 0 3px var(--accent-soft);
-    background:#fdfbff;
+    background:#faf4fd;
   }
   .card h3{
     margin:0 0 6px;
@@ -370,7 +370,7 @@
     { id:'logist',    label:'Логистика',                  tags:['logist'] },
     { id:'dobycha',   label:'Добывающие компании',        tags:['dobycha'] },
     { id:'sezon',     label:'Сезонный бизнес',            tags:['sezon'] },
-    { id:'stroyka',   label:'Подрядчики и строительство', tags:['stroyka'] },
+    { id:'stroyka',   label:'Строительство и подрядные работы', tags:['stroyka'] },
     { id:'proect',    label:'Инжиниринговые компании',    tags:['proect'] },
     { id:'IT',        label:'ИТ',                         tags:['IT'] },
     { id:'telecom',   label:'Телеком',                    tags:['telecom'] }
@@ -553,8 +553,6 @@
 
   // ---------- СОХРАНИТЬ В PDF ----------
   pdfBtn.addEventListener('click', function(){
-    // Открываем системный диалог печати: пользователь выбирает
-    // «Сохранить как PDF» в списке принтеров.
     window.print();
   });
 
